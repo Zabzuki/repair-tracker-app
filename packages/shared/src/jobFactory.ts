@@ -1,12 +1,19 @@
-import type { Job } from "./job";
+import type { Job, JobFormInput } from "./job";
 
-export function createJob(params: { plate: string; deviceId: string }): Job {
+export function createJob(input: JobFormInput & { deviceId: string }): Job {
   const now = Date.now();
+
   return {
     id: crypto.randomUUID(),
-    plate: params.plate.toUpperCase(),
-    deviceId: params.deviceId,
+    customerName: input.customerName,
+    customerPhone: input.customerPhone,
+    carModel: input.carModel,
+    carYear: input.carYear,
+    problemDescription: input.problemDescription,
+    photos: input.photos,
+    licensePlate: input.licensePlate.toUpperCase(),
     status: "waiting",
+    deviceId: input.deviceId,
     createdAt: now,
     updatedAt: now,
   };
