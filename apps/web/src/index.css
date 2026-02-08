@@ -1,1 +1,64 @@
 @import "tailwindcss";
+
+/* Design tokens (Lovable / shadcn theme) */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+
+  --primary: 24 95% 53%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222 47% 11%;
+
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 24 95% 53%;
+
+  --radius: 0.75rem;
+
+  /* Status colors */
+  --status-waiting: 45 93% 47%;
+  --status-waiting-foreground: 45 93% 15%;
+  --status-in-progress: 217 91% 60%;
+  --status-in-progress-foreground: 0 0% 100%;
+  --status-parts: 25 95% 53%;
+  --status-parts-foreground: 0 0% 100%;
+  --status-done: 142 71% 45%;
+  --status-done-foreground: 0 0% 100%;
+}
+/* 
+/* Tailwind v4 theme mapping */
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+}
+*/
+
+/* Optional but recommended */
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}

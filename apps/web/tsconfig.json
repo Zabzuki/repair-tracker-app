@@ -10,9 +10,10 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
+    "baseUrl": "src",
     "paths": {
-      "@garage/shared": ["../../packages/shared/src"]
+      "@garage/shared": ["../../packages/shared/src"],
+      "@/*": ["*"]
     }
   },
   "include": ["src"]

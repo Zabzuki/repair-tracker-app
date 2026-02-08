@@ -1,6 +1,11 @@
 import type { Job, JobStatus } from "@garage/shared";
 
-const STATUS_FLOW: JobStatus[] = ["waiting", "progress", "parts", "done"];
+const STATUS_FLOW: JobStatus[] = [
+  "waiting",
+  "in-progress",
+  "waiting-for-parts",
+  "done",
+];
 
 export function JobList({
   jobs,
@@ -28,8 +33,10 @@ export function JobList({
               isDone ? "bg-green-50 opacity-70" : "bg-white"
             }`}
           >
-            {/* Plate */}
-            <span className="text-xl font-bold tracking-wide">{job.plate}</span>
+            {/* licensePlate */}
+            <span className="text-xl font-bold tracking-wide">
+              {job.licensePlate}
+            </span>
 
             {/* Actions */}
             <div className="flex items-center gap-3">
@@ -41,9 +48,9 @@ export function JobList({
                   ${
                     job.status === "waiting"
                       ? "bg-gray-200"
-                      : job.status === "progress"
+                      : job.status === "in-progress"
                         ? "bg-yellow-200"
-                        : job.status === "parts"
+                        : job.status === "waiting-for-parts"
                           ? "bg-orange-200"
                           : "bg-green-300"
                   }

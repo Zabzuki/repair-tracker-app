@@ -32,9 +32,9 @@ const server = Bun.serve({
       try {
         const body = await req.json();
 
-        if (!body.plate || !body.deviceId) {
+        if (!body.licensePlate || !body.deviceId) {
           return new Response(
-            JSON.stringify({ error: "plate and deviceId required" }),
+            JSON.stringify({ error: "licensePlate and deviceId required" }),
             {
               status: 400,
               headers: {
@@ -44,12 +44,25 @@ const server = Bun.serve({
             },
           );
         }
+        const now = Date.now();
 
-        const job = createJob({
-          plate: body.plate,
+        const job = {
+          id: crypto.randomUUID(),
+          licensePlate: body.licensePlate,
           deviceId: body.deviceId,
-        });
 
+          // Optional / extended fields
+          customerName: body.customerName ?? "",
+          customerPhone: body.customerPhone ?? "",
+          carModel: body.carModel ?? "",
+          carYear: body.carYear ?? "",
+          problemDescription: body.problemDescription ?? "",
+          status: body.status ?? "waiting",
+          photos: Array.isArray(body.photos) ? body.photos : [],
+
+          createdAt: now,
+          updatedAt: now,
+        };
         jobs.push(job);
 
         return new Response(JSON.stringify(job), {
