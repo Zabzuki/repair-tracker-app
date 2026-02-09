@@ -74,7 +74,7 @@ export function JobDetails({
             <SheetTitle className="text-xl text-left">
               {job.customer.name}
             </SheetTitle>
-            <StatusBadge status={job.status} />
+            <StatusBadge status={job.status} className="mr-10" />
           </div>
         </SheetHeader>
 
