@@ -13,15 +13,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { StatusBadge } from "./StatusBadge";
-import {
-  JobStatus,
-  JobWithDetails,
-  statusLabels,
-  statusOrder,
-} from "@garage/shared";
+import { JobStatus, JobWithDetails } from "@garage/shared";
 import {
   Phone,
-  Car,
+  Car as CarIcon,
   Calendar,
   MessageSquare,
   Trash2,
@@ -29,6 +24,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { Mechanic } from "@garage/shared/src/mechanic";
+import { StatusSelect } from "./StatusSelect";
 
 type JobDetailsProps = {
   job: JobWithDetails | null;
@@ -40,6 +36,183 @@ type JobDetailsProps = {
   onAssignMechanic: (jobId: string, mechanicId: string | null) => void;
 };
 
+// --- Small Components ---
+
+function MechanicItem({ name, color }: { name: string; color: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <div
+        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
+        style={{ backgroundColor: color }}
+      >
+        {name.charAt(0)}
+      </div>
+      <span>{name}</span>
+    </div>
+  );
+}
+
+function MechanicSelect({
+  mechanics,
+  selectedId,
+  onChange,
+  assignedMechanic,
+}: {
+  mechanics: Mechanic[];
+  selectedId: string;
+  assignedMechanic?: Mechanic | null;
+  onChange: (id: string | null) => void;
+}) {
+  return (
+    <div className="space-y-2">
+      <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        Assigned Mechanic
+      </h3>
+      <Select
+        value={selectedId || "unassigned"}
+        onValueChange={(value) =>
+          onChange(value === "unassigned" ? null : value)
+        }
+      >
+        <SelectTrigger className="h-14 text-base">
+          <SelectValue placeholder="Select mechanic">
+            {assignedMechanic ? (
+              <MechanicItem
+                name={assignedMechanic.name}
+                color={assignedMechanic.color}
+              />
+            ) : (
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <User className="w-5 h-5" />
+                <span>Not assigned</span>
+              </div>
+            )}
+          </SelectValue>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="unassigned" className="h-12 text-base">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <User className="w-5 h-5" />
+              <span>Not assigned</span>
+            </div>
+          </SelectItem>
+          {mechanics.map((m) => (
+            <SelectItem key={m.id} value={m.id} className="h-12 text-base">
+              <MechanicItem name={m.name} color={m.color} />
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function VehicleCard({
+  licensePlate,
+  model,
+  year,
+}: {
+  licensePlate: string;
+  model: string;
+  year: number;
+}) {
+  return (
+    <div className="p-4 bg-secondary rounded-xl space-y-2">
+      <div className="flex items-center gap-3">
+        <CarIcon className="w-6 h-6 text-primary" />
+        <span className="font-mono font-bold text-lg">{licensePlate}</span>
+      </div>
+      <p className="text-muted-foreground pl-9">
+        {model} • {year}
+      </p>
+    </div>
+  );
+}
+
+function ContactButtons({
+  phone,
+  customerName,
+  carModel,
+  licensePlate,
+}: {
+  phone: string;
+  customerName: string;
+  carModel: string;
+  licensePlate: string;
+}) {
+  const handleWhatsApp = () => {
+    const cleanPhone = phone.replace(/[^0-9]/g, "");
+    const message = encodeURIComponent(
+      `Hi ${customerName}, this is regarding your ${carModel} (${licensePlate}).`,
+    );
+    window.open(`https://wa.me/${cleanPhone}?text=${message}`, "_blank");
+  };
+
+  const handleCall = () => {
+    window.open(`tel:${phone}`);
+  };
+
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      <Button
+        variant="outline"
+        className="h-14 text-base font-medium"
+        onClick={handleCall}
+      >
+        <Phone className="w-5 h-5 mr-2" /> Call
+      </Button>
+      <Button
+        variant="outline"
+        className="h-14 text-base font-medium border-status-done/30 text-status-done"
+        onClick={handleWhatsApp}
+      >
+        <MessageSquare className="w-5 h-5 mr-2" /> WhatsApp
+      </Button>
+    </div>
+  );
+}
+
+function PhotoGrid({ photos }: { photos: string[] }) {
+  return (
+    <div className="space-y-2">
+      <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        Photos ({photos.length})
+      </h3>
+      <div className="grid grid-cols-3 gap-2">
+        {photos.map((photo, i) => (
+          <img
+            key={i}
+            src={photo}
+            alt={`Photo ${i + 1}`}
+            className="w-full aspect-square object-cover rounded-lg"
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TimestampInfo({
+  createdAt,
+  updatedAt,
+}: {
+  createdAt: Date;
+  updatedAt: Date;
+}) {
+  return (
+    <div className="space-y-1 text-sm text-muted-foreground">
+      <div className="flex items-center gap-2">
+        <Calendar className="w-4 h-4" /> Created: {format(createdAt, "PPp")}
+      </div>
+      <div className="flex items-center gap-2">
+        <Calendar className="w-4 h-4" /> Updated: {format(updatedAt, "PPp")}
+      </div>
+    </div>
+  );
+}
+
+// --- Main Component ---
+
 export function JobDetails({
   job,
   open,
@@ -50,18 +223,6 @@ export function JobDetails({
   onAssignMechanic,
 }: JobDetailsProps) {
   if (!job) return null;
-
-  const handleWhatsApp = () => {
-    const phone = job.customer.phone.replace(/[^0-9]/g, "");
-    const message = encodeURIComponent(
-      `Hi ${job.customer.name}, this is regarding your ${job.car.model} (${job.car.licensePlate}).`,
-    );
-    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-  };
-
-  const handleCall = () => {
-    window.open(`tel:${job.customer.phone}`);
-  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -79,99 +240,26 @@ export function JobDetails({
         </SheetHeader>
 
         <div className="space-y-5 pb-8">
-          {/* Quick Contact - Large touch targets */}
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              variant="outline"
-              className="h-14 text-base font-medium"
-              onClick={handleCall}
-            >
-              <Phone className="w-5 h-5 mr-2" />
-              Call
-            </Button>
-            <Button
-              variant="outline"
-              className="h-14 text-base font-medium border-status-done/30 text-status-done"
-              onClick={handleWhatsApp}
-            >
-              <MessageSquare className="w-5 h-5 mr-2" />
-              WhatsApp
-            </Button>
-          </div>
+          <ContactButtons
+            phone={job.customer.phone}
+            customerName={job.customer.name}
+            carModel={job.car.model}
+            licensePlate={job.car.licensePlate}
+          />
 
-          {/* Vehicle Card */}
-          <div className="p-4 bg-secondary rounded-xl space-y-2">
-            <div className="flex items-center gap-3">
-              <Car className="w-6 h-6 text-primary" />
-              <span className="font-mono font-bold text-lg">
-                {job.car.licensePlate}
-              </span>
-            </div>
-            <p className="text-muted-foreground pl-9">
-              {job.car.model} • {job.car.year}
-            </p>
-          </div>
+          <VehicleCard
+            licensePlate={job.car.licensePlate}
+            model={job.car.model}
+            year={job.car.year}
+          />
 
-          {/* Mechanic Assignment */}
-          <div className="space-y-2">
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Assigned Mechanic
-            </h3>
-            <Select
-              value={job.mechanicId || "unassigned"}
-              onValueChange={(value) =>
-                onAssignMechanic(job.id, value === "unassigned" ? null : value)
-              }
-            >
-              <SelectTrigger className="h-14 text-base">
-                <SelectValue placeholder="Select mechanic">
-                  {job.mechanic ? (
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                        style={{ backgroundColor: job.mechanic.color }}
-                      >
-                        {job.mechanic.name.charAt(0)}
-                      </div>
-                      <span>{job.mechanic.name}</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <User className="w-5 h-5" />
-                      <span>Not assigned</span>
-                    </div>
-                  )}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="unassigned" className="h-12 text-base">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <User className="w-5 h-5" />
-                    <span>Not assigned</span>
-                  </div>
-                </SelectItem>
-                {mechanics.map((mechanic) => (
-                  <SelectItem
-                    key={mechanic.id}
-                    value={mechanic.id}
-                    className="h-12 text-base"
-                  >
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                        style={{ backgroundColor: mechanic.color }}
-                      >
-                        {mechanic.name.charAt(0)}
-                      </div>
-                      <span>{mechanic.name}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <MechanicSelect
+            mechanics={mechanics}
+            selectedId={job.mechanicId || ""}
+            assignedMechanic={job.mechanic}
+            onChange={(id) => onAssignMechanic(job.id, id)}
+          />
 
-          {/* Problem */}
           <div className="space-y-2">
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Problem
@@ -181,66 +269,20 @@ export function JobDetails({
             </p>
           </div>
 
-          {/* Photos */}
-          {job.photos.length > 0 && (
-            <div className="space-y-2">
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Photos ({job.photos.length})
-              </h3>
-              <div className="grid grid-cols-3 gap-2">
-                {job.photos.map((photo, index) => (
-                  <img
-                    key={index}
-                    src={photo}
-                    alt={`Photo ${index + 1}`}
-                    className="w-full aspect-square object-cover rounded-lg"
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+          {job.photos.length > 0 && <PhotoGrid photos={job.photos} />}
 
-          {/* Status Change */}
           <div className="space-y-2">
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Status
             </h3>
-            <Select
+            <StatusSelect
               value={job.status}
-              onValueChange={(value) =>
-                onStatusChange(job.id, value as JobStatus)
-              }
-            >
-              <SelectTrigger className="h-14 text-base">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {statusOrder.map((status) => (
-                  <SelectItem
-                    key={status}
-                    value={status}
-                    className="h-12 text-base"
-                  >
-                    {statusLabels[status]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              onChange={(status) => onStatusChange(job.id, status)}
+            />
           </div>
 
-          {/* Timestamps */}
-          <div className="space-y-1 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              Created: {format(job.createdAt, "PPp")}
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              Updated: {format(job.updatedAt, "PPp")}
-            </div>
-          </div>
+          <TimestampInfo createdAt={job.createdAt} updatedAt={job.updatedAt} />
 
-          {/* Delete */}
           <Button
             variant="outline"
             className="w-full h-14 text-base text-destructive border-destructive/30"
