@@ -14,17 +14,12 @@ import {
 } from "@/components/ui/select";
 import { StatusBadge } from "./StatusBadge";
 import { JobStatus, JobWithDetails } from "@garage/shared";
-import {
-  Phone,
-  Car as CarIcon,
-  Calendar,
-  MessageSquare,
-  Trash2,
-  User,
-} from "lucide-react";
+import { Phone, Calendar, MessageSquare, Trash2, User } from "lucide-react";
 import { format } from "date-fns";
 import { Mechanic } from "@garage/shared/src/mechanic";
 import { StatusSelect } from "./StatusSelect";
+import { MechanicItem } from "./MechanicItem";
+import { VehicleCard } from "./VehicleCard";
 
 type JobDetailsProps = {
   job: JobWithDetails | null;
@@ -37,20 +32,6 @@ type JobDetailsProps = {
 };
 
 // --- Small Components ---
-
-function MechanicItem({ name, color }: { name: string; color: string }) {
-  return (
-    <div className="flex items-center gap-2">
-      <div
-        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
-        style={{ backgroundColor: color }}
-      >
-        {name.charAt(0)}
-      </div>
-      <span>{name}</span>
-    </div>
-  );
-}
 
 function MechanicSelect({
   mechanics,
@@ -103,28 +84,6 @@ function MechanicSelect({
           ))}
         </SelectContent>
       </Select>
-    </div>
-  );
-}
-
-function VehicleCard({
-  licensePlate,
-  model,
-  year,
-}: {
-  licensePlate: string;
-  model: string;
-  year: number;
-}) {
-  return (
-    <div className="p-4 bg-secondary rounded-xl space-y-2">
-      <div className="flex items-center gap-3">
-        <CarIcon className="w-6 h-6 text-primary" />
-        <span className="font-mono font-bold text-lg">{licensePlate}</span>
-      </div>
-      <p className="text-muted-foreground pl-9">
-        {model} • {year}
-      </p>
     </div>
   );
 }
