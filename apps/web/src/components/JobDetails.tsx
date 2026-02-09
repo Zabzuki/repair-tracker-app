@@ -31,8 +31,6 @@ type JobDetailsProps = {
   onAssignMechanic: (jobId: string, mechanicId: string | null) => void;
 };
 
-// --- Small Components ---
-
 function MechanicSelect({
   mechanics,
   selectedId,

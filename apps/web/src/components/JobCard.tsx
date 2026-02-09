@@ -1,8 +1,11 @@
 import { JobStatus, JobWithDetails, statusOrder } from "@garage/shared";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
-import { Phone, Car, ChevronRight, User } from "lucide-react";
+import { Phone, ChevronRight, User } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
+import { getNextStatus, getNextStatusLabel } from "./JobCard/JobUtils";
+import { VehicleCard } from "./VehicleCard";
+import { MechanicItem } from "./MechanicItem";
 
 type JobCardProps = {
   job: JobWithDetails;
@@ -11,25 +14,7 @@ type JobCardProps = {
 };
 
 export function JobCard({ job, onStatusChange, onViewDetails }: JobCardProps) {
-  const currentStatusIndex = statusOrder.indexOf(job.status);
-  const nextStatus =
-    currentStatusIndex < statusOrder.length - 1
-      ? statusOrder[currentStatusIndex + 1]
-      : null;
-
-  const getNextStatusLabel = () => {
-    if (!nextStatus) return "";
-    switch (nextStatus) {
-      case "in-progress":
-        return "Start Work";
-      case "waiting-for-parts":
-        return "Waiting Parts";
-      case "done":
-        return "Mark Done";
-      default:
-        return "";
-    }
-  };
+  const nextStatus = getNextStatus(job.status, statusOrder);
 
   return (
     <Card className="pt-4" onClick={() => onViewDetails(job)}>
@@ -48,30 +33,19 @@ export function JobCard({ job, onStatusChange, onViewDetails }: JobCardProps) {
           <StatusBadge status={job.status} />
         </div>
 
-        {/* Car Info - Prominent */}
-        <div className="flex items-center gap-3 p-3 bg-secondary rounded-lg">
-          <Car className="w-8 h-8 text-primary shrink-0" />
-          <div className="min-w-0 flex-1">
-            <p className="font-mono font-bold text-m">{job.car.licensePlate}</p>
-            <p className="text-s text-muted-foreground truncate">
-              {job.car.model} • {job.car.year}
-            </p>
-          </div>
-          <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
-        </div>
+        {/* Vehicle */}
+        <VehicleCard
+          licensePlate={job.car.licensePlate}
+          model={job.car.model}
+          year={job.car.year}
+          trailingIcon={
+            <ChevronRight className="w-5 h-5 text-muted-foreground" />
+          }
+        />
 
         {/* Mechanic Assignment */}
         {job.mechanic ? (
-          <div className="flex items-center gap-2 text-sm">
-            <div
-              className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
-              style={{ backgroundColor: job.mechanic.color }}
-            >
-              {job.mechanic.name.charAt(0)}
-            </div>
-            <span className="text-muted-foreground">Assigned to</span>
-            <span className="font-medium">{job.mechanic.name}</span>
-          </div>
+          <MechanicItem name={job.mechanic.name} color={job.mechanic.color} />
         ) : (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <User className="w-5 h-5" />
@@ -79,7 +53,7 @@ export function JobCard({ job, onStatusChange, onViewDetails }: JobCardProps) {
           </div>
         )}
 
-        {/* Problem - Truncated */}
+        {/* Problem */}
         <p className="text-m text-muted-foreground line-clamp-2">
           {job.problemDescription}
         </p>
@@ -93,7 +67,7 @@ export function JobCard({ job, onStatusChange, onViewDetails }: JobCardProps) {
               onStatusChange(job.id, nextStatus);
             }}
           >
-            {getNextStatusLabel()}
+            {getNextStatusLabel(nextStatus)}
           </Button>
         )}
 
