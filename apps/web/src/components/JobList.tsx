@@ -1,4 +1,4 @@
-import type { Job, JobStatus } from "@garage/shared";
+import type { JobStatus, JobWithDetails } from "@garage/shared";
 
 const STATUS_FLOW: JobStatus[] = [
   "waiting",
@@ -12,7 +12,7 @@ export function JobList({
   onStatusChange,
   onDelete,
 }: {
-  jobs: Job[];
+  jobs: JobWithDetails[];
   onStatusChange: (id: string, status: JobStatus) => void;
   onDelete: (id: string) => void;
 }) {
@@ -35,7 +35,7 @@ export function JobList({
           >
             {/* licensePlate */}
             <span className="text-xl font-bold tracking-wide">
-              {job.licensePlate}
+              {job.car.licensePlate}
             </span>
 
             {/* Actions */}

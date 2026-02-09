@@ -10,7 +10,6 @@ import {
 import { useJobs } from "../hooks/useJobs";
 // import { DeviceInfo } from "../components/DeviceInfo";
 import { JobCard } from "@/components/JobCard";
-import { JobForm } from "@/components/JobForm";
 
 import { Button } from "@/components/ui/button";
 import { Plus, Wrench, Search, X } from "lucide-react";
@@ -18,6 +17,7 @@ import { useToast } from "@/hooks/useToast";
 import { Input } from "@/components/ui/input";
 import { JobDetails } from "@/components/JobDetails";
 import { StatusFilter } from "@/components/StatusFilter";
+import { JobForm } from "@/components/JobForm/JobForm";
 
 export function HomePage() {
   // Device and license setup

@@ -1,11 +1,11 @@
 import { JobStatus, JobWithDetails, statusOrder } from "@garage/shared";
-import { Card, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
 import { Phone, ChevronRight, User } from "lucide-react";
-import { StatusBadge } from "./StatusBadge";
-import { getNextStatus, getNextStatusLabel } from "./JobCard/JobUtils";
-import { VehicleCard } from "./VehicleCard";
-import { MechanicItem } from "./MechanicItem";
+import { Card, CardContent } from "../ui/card";
+import { StatusBadge } from "../StatusBadge";
+import { Button } from "../ui/button";
+import { getNextStatus, getNextStatusLabel } from "./JobUtils";
+import { VehicleCard } from "../VehicleCard";
+import { MechanicItem } from "../MechanicItem";
 
 type JobCardProps = {
   job: JobWithDetails;
@@ -33,7 +33,7 @@ export function JobCard({ job, onStatusChange, onViewDetails }: JobCardProps) {
           <StatusBadge status={job.status} />
         </div>
 
-        {/* Vehicle */}
+        {/* Vehicle Card */}
         <VehicleCard
           licensePlate={job.car.licensePlate}
           model={job.car.model}
@@ -53,7 +53,7 @@ export function JobCard({ job, onStatusChange, onViewDetails }: JobCardProps) {
           </div>
         )}
 
-        {/* Problem */}
+        {/* Problem - Truncated */}
         <p className="text-m text-muted-foreground line-clamp-2">
           {job.problemDescription}
         </p>

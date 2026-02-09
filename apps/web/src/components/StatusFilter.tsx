@@ -2,16 +2,20 @@ import { cn } from "@/utils/classNames";
 import { JobStatus } from "@garage/shared";
 import { Clock, Wrench, Package, CheckCircle2, LayoutGrid } from "lucide-react";
 
-interface StatusFilterProps {
+type StatusFilterProps = {
   activeFilter: JobStatus | "all";
   onFilterChange: (filter: JobStatus | "all") => void;
   counts: Record<JobStatus | "all", number>;
-}
+};
 
 // Icon mapping
 const filterConfig: Record<
   JobStatus | "all",
-  { icon: typeof Clock; label: string; shortLabel: string }
+  {
+    icon: React.FC<React.SVGProps<SVGSVGElement>>;
+    label: string;
+    shortLabel: string;
+  }
 > = {
   all: { icon: LayoutGrid, label: "All", shortLabel: "All" },
   waiting: { icon: Clock, label: "Waiting", shortLabel: "Wait" },
@@ -21,8 +25,6 @@ const filterConfig: Record<
 };
 
 const ACTIVE_BUTTON = "bg-primary text-primary-foreground";
-
-// Badge when active (slightly transparent white)
 const ACTIVE_BADGE = "bg-white/20 text-primary-foreground";
 
 export function StatusFilter({
@@ -56,7 +58,7 @@ export function StatusFilter({
                 isActive ? ACTIVE_BADGE : "bg-background text-foreground",
               )}
             >
-              {counts[filter] | 0}
+              {counts[filter] ?? 0}
             </span>
           </button>
         );

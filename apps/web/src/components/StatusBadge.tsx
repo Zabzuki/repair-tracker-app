@@ -2,14 +2,14 @@ import { cn } from "@/utils/classNames";
 import { JobStatus, statusLabels } from "@garage/shared";
 import { Clock, Wrench, Package, CheckCircle2 } from "lucide-react";
 
-interface StatusBadgeProps {
+type StatusBadgeProps = {
   status: JobStatus;
   className?: string;
-}
+};
 
 const statusConfig: Record<
   JobStatus,
-  { icon: typeof Clock; className: string }
+  { icon: React.FC<React.SVGProps<SVGSVGElement>>; className: string }
 > = {
   waiting: {
     icon: Clock,
@@ -30,14 +30,13 @@ const statusConfig: Record<
 };
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {
-  const config = statusConfig[status];
-  const Icon = config.icon;
+  const { icon: Icon, className: statusClass } = statusConfig[status];
 
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-3xl px-3 py-1.5 text-s font-medium status-badge",
-        config.className,
+        "inline-flex items-center gap-1.5 rounded-3xl px-3 py-1.5 text-s font-medium",
+        statusClass,
         className,
       )}
     >
