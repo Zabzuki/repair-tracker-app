@@ -20,14 +20,10 @@ const filterConfig: Record<
   done: { icon: CheckCircle2, label: "Done", shortLabel: "Done" },
 };
 
-// Color mapping (matches StatusBadge)
-const statusColors: Record<JobStatus | "all", string> = {
-  all: "bg-secondary text-secondary-foreground",
-  waiting: "bg-status-waiting text-status-waiting-foreground",
-  "in-progress": "bg-status-in-progress text-status-in-progress-foreground",
-  "waiting-for-parts": "bg-status-parts text-status-parts-foreground",
-  done: "bg-status-done text-status-done-foreground",
-};
+const ACTIVE_BUTTON = "bg-primary text-primary-foreground";
+
+// Badge when active (slightly transparent white)
+const ACTIVE_BADGE = "bg-white/20 text-primary-foreground";
 
 export function StatusFilter({
   activeFilter,
@@ -47,19 +43,20 @@ export function StatusFilter({
             className={cn(
               "flex items-center gap-1.5 px-3 h-10 rounded-full text-sm font-medium transition-colors touch-manipulation",
               isActive
-                ? statusColors[filter]
+                ? ACTIVE_BUTTON
                 : "bg-secondary text-secondary-foreground active:bg-secondary/70",
             )}
           >
             <Icon className="w-4 h-4" />
             <span>{shortLabel}</span>
+
             <span
               className={cn(
-                "min-w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold",
-                isActive ? "bg-white/20" : "bg-background",
+                "min-w-5 h-5 px-1 rounded-full flex items-center justify-center text-xs font-bold",
+                isActive ? ACTIVE_BADGE : "bg-background text-foreground",
               )}
             >
-              {counts[filter]}
+              {counts[filter] | 0}
             </span>
           </button>
         );

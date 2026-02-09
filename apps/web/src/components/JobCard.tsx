@@ -1,14 +1,14 @@
-import { Job, JobStatus, statusOrder } from "@garage/shared";
+import { JobStatus, JobWithDetails, statusOrder } from "@garage/shared";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
-import { Phone, Car, ChevronRight } from "lucide-react";
+import { Phone, Car, ChevronRight, User } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 
-interface JobCardProps {
-  job: Job;
+type JobCardProps = {
+  job: JobWithDetails;
   onStatusChange: (id: string, status: JobStatus) => void;
-  onViewDetails: (job: Job) => void;
-}
+  onViewDetails: (job: JobWithDetails) => void;
+};
 
 export function JobCard({ job, onStatusChange, onViewDetails }: JobCardProps) {
   const currentStatusIndex = statusOrder.indexOf(job.status);
@@ -32,20 +32,17 @@ export function JobCard({ job, onStatusChange, onViewDetails }: JobCardProps) {
   };
 
   return (
-    <Card
-      className="glass-card active:scale-[0.98] transition-transform touch-manipulation"
-      onClick={() => onViewDetails(job)}
-    >
+    <Card className="pt-4" onClick={() => onViewDetails(job)}>
       <CardContent className="p-4 space-y-3">
         {/* Header: Name + Status */}
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <h3 className="font-semibold text-base truncate">
-              {job.customerName}
+            <h3 className="font-semibold text-lg truncate">
+              {job.customer.name}
             </h3>
-            <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-0.5">
-              <Phone className="w-3.5 h-3.5 shrink-0" />
-              <span>{job.customerPhone}</span>
+            <div className="flex items-center gap-1.5 text-m text-muted-foreground mt-0.5">
+              <Phone className="w-4 h-4 shrink-0" />
+              <span>{job.customer.phone}</span>
             </div>
           </div>
           <StatusBadge status={job.status} />
@@ -53,18 +50,37 @@ export function JobCard({ job, onStatusChange, onViewDetails }: JobCardProps) {
 
         {/* Car Info - Prominent */}
         <div className="flex items-center gap-3 p-3 bg-secondary rounded-lg">
-          <Car className="w-5 h-5 text-primary shrink-0" />
+          <Car className="w-8 h-8 text-primary shrink-0" />
           <div className="min-w-0 flex-1">
-            <p className="font-mono font-bold text-sm">{job.licensePlate}</p>
-            <p className="text-xs text-muted-foreground truncate">
-              {job.carModel} • {job.carYear}
+            <p className="font-mono font-bold text-m">{job.car.licensePlate}</p>
+            <p className="text-s text-muted-foreground truncate">
+              {job.car.model} • {job.car.year}
             </p>
           </div>
           <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
         </div>
 
+        {/* Mechanic Assignment */}
+        {job.mechanic ? (
+          <div className="flex items-center gap-2 text-sm">
+            <div
+              className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
+              style={{ backgroundColor: job.mechanic.color }}
+            >
+              {job.mechanic.name.charAt(0)}
+            </div>
+            <span className="text-muted-foreground">Assigned to</span>
+            <span className="font-medium">{job.mechanic.name}</span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <User className="w-5 h-5" />
+            <span>Not assigned</span>
+          </div>
+        )}
+
         {/* Problem - Truncated */}
-        <p className="text-sm text-muted-foreground line-clamp-2">
+        <p className="text-m text-muted-foreground line-clamp-2">
           {job.problemDescription}
         </p>
 

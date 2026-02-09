@@ -13,17 +13,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { StatusBadge } from "./StatusBadge";
-import { Job, JobStatus, statusLabels, statusOrder } from "@garage/shared";
-import { Phone, Car, Calendar, MessageSquare, Trash2 } from "lucide-react";
+import {
+  JobStatus,
+  JobWithDetails,
+  statusLabels,
+  statusOrder,
+} from "@garage/shared";
+import {
+  Phone,
+  Car,
+  Calendar,
+  MessageSquare,
+  Trash2,
+  User,
+} from "lucide-react";
 import { format } from "date-fns";
+import { Mechanic } from "@garage/shared/src/mechanic";
 
-interface JobDetailsProps {
-  job: Job | null;
+type JobDetailsProps = {
+  job: JobWithDetails | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onStatusChange: (id: string, status: JobStatus) => void;
   onDelete: (id: string) => void;
-}
+  mechanics: Mechanic[];
+  onAssignMechanic: (jobId: string, mechanicId: string | null) => void;
+};
 
 export function JobDetails({
   job,
@@ -31,19 +46,21 @@ export function JobDetails({
   onOpenChange,
   onStatusChange,
   onDelete,
+  mechanics,
+  onAssignMechanic,
 }: JobDetailsProps) {
   if (!job) return null;
 
   const handleWhatsApp = () => {
-    const phone = job.customerPhone.replace(/[^0-9]/g, "");
+    const phone = job.customer.phone.replace(/[^0-9]/g, "");
     const message = encodeURIComponent(
-      `Hi ${job.customerName}, this is regarding your ${job.carModel} (${job.licensePlate}).`,
+      `Hi ${job.customer.name}, this is regarding your ${job.car.model} (${job.car.licensePlate}).`,
     );
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
   };
 
   const handleCall = () => {
-    window.open(`tel:${job.customerPhone}`);
+    window.open(`tel:${job.customer.phone}`);
   };
 
   return (
@@ -55,7 +72,7 @@ export function JobDetails({
         <SheetHeader className="pb-4">
           <div className="flex items-start justify-between gap-4">
             <SheetTitle className="text-xl text-left">
-              {job.customerName}
+              {job.customer.name}
             </SheetTitle>
             <StatusBadge status={job.status} />
           </div>
@@ -87,12 +104,71 @@ export function JobDetails({
             <div className="flex items-center gap-3">
               <Car className="w-6 h-6 text-primary" />
               <span className="font-mono font-bold text-lg">
-                {job.licensePlate}
+                {job.car.licensePlate}
               </span>
             </div>
             <p className="text-muted-foreground pl-9">
-              {job.carModel} • {job.carYear}
+              {job.car.model} • {job.car.year}
             </p>
+          </div>
+
+          {/* Mechanic Assignment */}
+          <div className="space-y-2">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Assigned Mechanic
+            </h3>
+            <Select
+              value={job.mechanicId || "unassigned"}
+              onValueChange={(value) =>
+                onAssignMechanic(job.id, value === "unassigned" ? null : value)
+              }
+            >
+              <SelectTrigger className="h-14 text-base">
+                <SelectValue placeholder="Select mechanic">
+                  {job.mechanic ? (
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                        style={{ backgroundColor: job.mechanic.color }}
+                      >
+                        {job.mechanic.name.charAt(0)}
+                      </div>
+                      <span>{job.mechanic.name}</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <User className="w-5 h-5" />
+                      <span>Not assigned</span>
+                    </div>
+                  )}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="unassigned" className="h-12 text-base">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <User className="w-5 h-5" />
+                    <span>Not assigned</span>
+                  </div>
+                </SelectItem>
+                {mechanics.map((mechanic) => (
+                  <SelectItem
+                    key={mechanic.id}
+                    value={mechanic.id}
+                    className="h-12 text-base"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                        style={{ backgroundColor: mechanic.color }}
+                      >
+                        {mechanic.name.charAt(0)}
+                      </div>
+                      <span>{mechanic.name}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Problem */}

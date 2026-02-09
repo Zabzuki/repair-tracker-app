@@ -8,31 +8,33 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "hsl(var(--background) / <alpha-value>)",
-        foreground: "hsl(var(--foreground) / <alpha-value>)",
-        card: "hsl(var(--card) / <alpha-value>)",
-        "card-foreground": "hsl(var(--card-foreground) / <alpha-value>)",
-        primary: "hsl(var(--primary) / <alpha-value>)",
-        "primary-foreground": "hsl(var(--primary-foreground) / <alpha-value>)",
-        secondary: "hsl(var(--secondary) / <alpha-value>)",
-        "secondary-foreground":
-          "hsl(var(--secondary-foreground) / <alpha-value>)",
-        border: "hsl(var(--border) / <alpha-value>)",
-        input: "hsl(var(--input) / <alpha-value>)",
-        ring: "hsl(var(--ring) / <alpha-value>)",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
 
-        "status-waiting": "hsl(var(--status-waiting) / <alpha-value>)",
-        "status-waiting-foreground":
-          "hsl(var(--status-waiting-foreground) / <alpha-value>)",
-        "status-in-progress": "hsl(var(--status-in-progress) / <alpha-value>)",
-        "status-in-progress-foreground":
-          "hsl(var(--status-in-progress-foreground) / <alpha-value>)",
-        "status-parts": "hsl(var(--status-parts) / <alpha-value>)",
-        "status-parts-foreground":
-          "hsl(var(--status-parts-foreground) / <alpha-value>)",
-        "status-done": "hsl(var(--status-done) / <alpha-value>)",
-        "status-done-foreground":
-          "hsl(var(--status-done-foreground) / <alpha-value>)",
+        card: "hsl(var(--card))",
+        "card-foreground": "hsl(var(--card-foreground))",
+
+        primary: "hsl(var(--primary))",
+        "primary-foreground": "hsl(var(--primary-foreground))",
+
+        secondary: "hsl(var(--secondary))",
+        "secondary-foreground": "hsl(var(--secondary-foreground))",
+
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+
+        "status-waiting": "hsl(45, 93%, 47%)",
+        "status-waiting-foreground": "hsl(45, 93%, 15%)",
+        "status-in-progress": "hsl(217, 91%, 60%)",
+        "status-in-progress-foreground": "hsl(0, 0%, 100%)",
+        "status-parts": "hsl(25, 95%, 53%)",
+        "status-parts-foreground": "hsl(0, 0%, 100%)",
+        "status-done": "hsl(142, 71%, 45%)",
+        "status-done-foreground": "hsl(0, 0%, 100%)",
+
+        popover: "hsl(var(--popover))",
+        "popover-foreground": "hsl(var(--popover-foreground))",
       },
       borderRadius: {
         DEFAULT: "var(--radius)",

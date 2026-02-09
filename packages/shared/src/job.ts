@@ -1,4 +1,7 @@
-// packages/shared/src/job.ts
+import type { Car } from "./car";
+import type { Customer } from "./customer";
+import type { Mechanic } from "./mechanic";
+
 export type JobStatus =
   | "waiting"
   | "in-progress"
@@ -7,17 +10,22 @@ export type JobStatus =
 
 export type Job = {
   id: string;
-  customerName: string;
-  customerPhone: string;
-  carModel: string;
-  carYear: string;
+  customerId: string;
+  carId: string;
+  mechanicId: string | null;
   problemDescription: string;
-  photos: string[];
-  licensePlate: string; // license plate (uppercase in factory)
   status: JobStatus;
-  deviceId: string; // which device created it
-  createdAt: number; // timestamp when job was created
-  updatedAt: number; // timestamp of last update
+  photos: string[];
+  deviceId?: string; // which device created it
+  createdAt: Date; // timestamp when job was created
+  updatedAt: Date; // timestamp of last update
+};
+
+// Enriched job with resolved relationships for display
+export type JobWithDetails = Job & {
+  customer: Customer;
+  car: Car;
+  mechanic: Mechanic | null;
 };
 
 export type JobFormInput = Omit<

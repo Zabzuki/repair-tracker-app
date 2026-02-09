@@ -34,7 +34,13 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
   const Icon = config.icon;
 
   return (
-    <span className={cn("status-badge", config.className, className)}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-3xl px-3 py-1.5 text-s font-medium status-badge",
+        config.className,
+        className,
+      )}
+    >
       <Icon className="w-3.5 h-3.5" />
       {statusLabels[status]}
     </span>

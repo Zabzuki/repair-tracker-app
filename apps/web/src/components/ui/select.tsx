@@ -116,7 +116,14 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none data-disabled:pointer-events-none data-disabled:opacity-50 focus:bg-accent focus:text-accent-foreground",
+      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none",
+      "data-disabled:pointer-events-none data-disabled:opacity-50",
+      // Hover / keyboard focus (highest priority)
+      "data-highlighted:bg-primary data-highlighted:text-primary-foreground",
+      // Selected ONLY when not hovered
+      "data-[state=checked]:data-[highlighted=false]:bg-primary",
+      "data-[state=checked]:data-[highlighted=false]:text-primary-foreground",
+
       className,
     )}
     {...props}
