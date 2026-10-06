@@ -3,6 +3,8 @@
 A small full-stack app for a car-repair garage to track repair jobs: register a
 car and its problem, then move the job through its workflow and filter by status.
 
+![Repair Tracker demo](docs/media/repair-tracker-demo.gif)
+
 ## Features
 
 - Create a repair job with license plate, device id, customer name/phone, car
