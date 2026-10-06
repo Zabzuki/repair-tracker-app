@@ -5,6 +5,8 @@ car and its problem, then move the job through its workflow and filter by status
 
 ![Repair Tracker demo](docs/media/repair-tracker-demo.gif)
 
+*Filtering jobs by status (here, "Parts"), switching back to "All", then opening the New Job form and entering a problem description.*
+
 ## Features
 
 - Create a repair job with license plate, device id, customer name/phone, car
