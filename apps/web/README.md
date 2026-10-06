@@ -13,7 +13,7 @@ It connects to the API and provides a simple, intuitive UI for managing repair j
 
 ## Features
 
-- Device-based authorization
+- Each job records the id of the device that created it
 - Add jobs by **license plate**
 - Update job **status** in real-time
 - Delete jobs from the list

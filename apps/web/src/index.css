@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Design tokens (Lovable / shadcn theme) */
+/* Design tokens (shadcn theme) */
 :root {
   --background: 0 0% 100%;
   --foreground: 222 47% 11%;
