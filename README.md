@@ -58,3 +58,7 @@ bun run --cwd apps/web dev
 ```
 
 The web app calls the API at `http://localhost:3001` (see `apps/web/src/api/jobs.tsx`).
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file.
